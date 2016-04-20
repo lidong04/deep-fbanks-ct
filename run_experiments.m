@@ -5,6 +5,7 @@ function run_experiments()
   path_model_vgg_m = 'data/models/imagenet-vgg-m.mat';
   path_model_vgg_vd = 'data/models/imagenet-vgg-verydeep-19.mat';
   path_model_alexnet = 'data/models/imagenet-caffe-alex.mat';
+  path_model_googlenet = 'data/models/imagenet-googlenet-dag.mat';
 
   % RCNN (FC-CNN) flavors
   rcnn.name = 'rcnn' ;
@@ -73,9 +74,14 @@ function run_experiments()
     'numPcaDimensions', 80} ;
 
   % Set of experiments to run
-  setupNameList = {'rcnn', 'dcnn', 'dsift', 'rdcnn', 'srdcnn', 'rcnnvd', 'dcnnvd', 'rdcnnvd'} ;
-  encoderList = {{rcnn}, {dcnn}, {dsift}, {rcnn dcnn}, {rcnn dcnn dsift}, {rcnnvd}, {dcnnvd}, {rcnnvd dcnnvd}} ;
-  datasetList = {{'kth', 4}, {'fmd',14}, {'dtd',10}, {'voc07',1}, {'mit',1}, {'os',1}} ;
+  %setupNameList = {'rcnn', 'dcnn', 'dsift', 'rdcnn', 'srdcnn', 'rcnnvd', 'dcnnvd', 'rdcnnvd'} ;
+  %setupNameList = {'dcnn'};
+  setupNameList = {'dsift'};
+  %encoderList = {{rcnn}, {dcnn}, {dsift}, {rcnn dcnn}, {rcnn dcnn dsift}, {rcnnvd}, {dcnnvd}, {rcnnvd dcnnvd}} ;
+  %encoderList = {{dcnn}};
+  encoderList = {{dsift}};
+  %datasetList = {{'kth', 4}, {'fmd',14}, {'dtd',10}, {'voc07',1}, {'mit',1}, {'os',1}} ;
+  datasetList = {{'dtd', 1}};
 
 
   for ii = 1 : numel(datasetList)

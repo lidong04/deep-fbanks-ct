@@ -55,7 +55,7 @@ else
   offset = round(x + info.receptiveFieldSize(end)/2 - 0.5);
   stride = prod(info.stride(1,:)) ;
   border = ceil(info.receptiveFieldSize(end)/2 + 1);
-  averageColour = mean(mean(net.normalization.averageImage,1),2) ;
+  averageColour = mean(mean(net.meta.normalization.averageImage,1),2) ;
 end
 
 if ~iscell(im)

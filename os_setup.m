@@ -91,6 +91,8 @@ end
 %                                                       Download CNN models
 % -------------------------------------------------------------------------
 
+% already downloaded
+%{
 for i = 1:numel(models)
   if ~exist(fullfile('data/models', models{i}))
     fprintf('downloading model %s\n', models{i}) ;
@@ -99,6 +101,7 @@ for i = 1:numel(models)
       fullfile('data/models', models{i})) ;
   end
 end
+%}
 
 % -------------------------------------------------------------------------
 %                                                              Load dataset

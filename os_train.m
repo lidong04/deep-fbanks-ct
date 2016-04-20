@@ -23,7 +23,7 @@ if ~exist(opts.resultPath)
         end
       else
         train = find(ismember(imdb.segments.set, [1 2])) ;
-        train = vl_colsubset(train, 1000, 'uniform') ;
+        train = vl_colsubset(train, 150, 'uniform') ;
         encoder = encoder_train_from_segments(...
           imdb, imdb.segments.id(train), ...
           opts.encoders{i}.opts{:}, ...
@@ -147,7 +147,8 @@ for c=1:numel(info.classes)
   nn = sum(y(train) < 0) ;
   n = np + nn ;
 
-  [w{c},b{c}] = vl_svmtrain(psi(:,train & y ~= 0), y(train & y ~= 0), 1/(n* C), ...
+  cols = (train & y ~= 0);
+  [w{c},b{c}] = vl_svmtrain(psi(:,cols), y(cols), 1/(n* C), ...
     'epsilon', 0.001, 'verbose', 'biasMultiplier', 1, ...
     'maxNumIterations', n * 200) ;
 
@@ -169,6 +170,9 @@ for c=1:numel(info.classes)
 end
 info.w = cat(2,w{:}) ;
 info.b = cat(2,b{:}) ;
+svm_param.w = info.w;
+svm_param.b = info.b;
+save('data/exp01/dtd-seed-01/svm_w_b.mat', '-struct', 'svm_param');
 info.scores = cat(1, scores{:}) ;
 info.train.ap = ap ;
 info.train.ap11 = ap11 ;
@@ -258,8 +262,8 @@ batches = mat2cell(1:numel(imageIds), 1, [opts.batchSize * ones(1, n-1), numel(i
 batchResults = cell(1, numel(batches)) ;
 
 % just use as many workers as are already available
-numWorkers = matlabpool('size') ;
-parfor (b = 1:numel(batches), numWorkers)
+%numWorkers = parpool() ;
+for b = 1:numel(batches)
 %for b = 1:numel(batches)
   batchResults{b} = get_batch_results(imdb, imageIds, batches{b}, ...
     encoder, opts.maxNumLocalDescriptorsReturned) ;
@@ -365,7 +369,10 @@ end
 
 switch opts.type
   case {'rcnn', 'dcnn'}
-    encoder.net = load(opts.model) ;
+    fprintf('loading model (tidy) %s\n', opts.model);
+    tmp_net = load(opts.model);
+    encoder.net = vl_simplenn_tidy(tmp_net);
+    %encoder.net = load(opts.model) ;
     encoder.net.layers = encoder.net.layers(1:opts.layer) ;
     if opts.useGpu
       encoder.net = vl_simplenn_move(encoder.net, 'gpu') ;
