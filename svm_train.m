@@ -83,18 +83,25 @@ pred = w'*psi + b ;
 %   [~,~,i]= vl_pr(y(train), pred(train)) ; 
 %   [~,~,i]= vl_pr(y(test), pred(test)) ; 
 %   [~,~,i]= vl_pr(y(train), pred(train), 'normalizeprior', 0.01) ; 
-%   [~,~,i]= vl_pr(y(test), pred(test), 'normalizeprior', 0.01) ;  
-[~,~,i]= vl_pr(y(train), pred(train)) ; ap = i.ap ; ap11 = i.ap_interp_11 ;
-[~,~,i]= vl_pr(y(test), pred(test)) ; tap = i.ap ; tap11 = i.ap_interp_11 ;
-[~,~,i]= vl_pr(y(train), pred(train), 'normalizeprior', 0.01) ; nap = i.ap ;
-[~,~,i]= vl_pr(y(test), pred(test), 'normalizeprior', 0.01) ; tnap = i.ap ;
+%   [~,~,i]= vl_pr(y(test), pred(test), 'normalizeprior', 0.01) ; 
+%vl_pr(y(train), pred(train));
+%vl_pr(y(test), pred(test));
+[p, r, b] = pr_curve(y(train), pred(train));
+[tp, tr, tb] = pr_curve(y(test), pred(test));
+fprintf('train: precision: %.1f, recall: %.1f, bias: %.4f\n', p*100, r*100, b);
+fprintf(' test: precision: %.1f, recall: %.1f, bias: %.4f\n', tp*100, tr*100, tb);
 
-fprintf('Average Precision: train: %.1f, test: %.1f\n', ap*100, tap*100);
-fprintf('Average Precision (normalized): train: %.1f, test: %.1f\n', nap*100, tnap*100);
+% [~,~,i]= vl_pr(y(train), pred(train)) ; ap = i.ap ; ap11 = i.ap_interp_11 ;
+% [~,~,i]= vl_pr(y(test), pred(test)) ; tap = i.ap ; tap11 = i.ap_interp_11 ;
+% [~,~,i]= vl_pr(y(train), pred(train), 'normalizeprior', 0.01) ; nap = i.ap ;
+% [~,~,i]= vl_pr(y(test), pred(test), 'normalizeprior', 0.01) ; tnap = i.ap ;
+
+%fprintf('Average Precision: train: %.1f, test: %.1f\n', ap*100, tap*100);
+%fprintf('Average Precision (normalized): train: %.1f, test: %.1f\n', nap*100, tnap*100);
 
 svm_param.w = w;
 svm_param.b = b;
-save('data/exp01/dtd-seed-01/svm_w_b.mat', '-struct', 'svm_param');
+save('/home/lidong/deep-fbanks/data/test/svm-param-cnn.mat', '-struct', 'svm_param');
 
 fprintf('SVM trained and saved. \n');
 clear;

@@ -9,7 +9,7 @@ end
 
 %opts.netFile = 'data/test/imagenet-vgg-m.mat';
 opts.encoderFile = 'data/test/dcnnfv-encoder.mat';
-opts.svmFile = 'data/test/svm-param.mat';
+opts.svmFile = 'data/test/svm-param-cnn.mat';
 
 %if exist(netFile)  opts.netFile = netFile; end
 if exist(encoderFile)  opts.encoderFile = encoderFile; end
@@ -37,10 +37,10 @@ if isfield(encoder, 'net')
 end
 
 %info.classes = find(imdb.meta.inUse) ;
-classes = (1:47);
+svm_param = load(svmFile);
+classes = numel(svm_param.b);
 w = {} ;
 b = {} ;
-svm_param = load(svmFile);
 for c=1:numel(classes)
     w{c} = svm_param.w(:,c);
     b{c} = svm_param.b(:,c);
